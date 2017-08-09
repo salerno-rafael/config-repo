@@ -1,0 +1,52 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.4.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+ 
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+jar {
+	baseName = 'config-server'
+	version = "${currentVersion}-${currentBuild}"
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+	maven { url "http://172.23.195.92:8081/artifactory/libs-release-local" }
+}
+
+dependencyManagement {
+     imports {
+          mavenBom 'org.springframework.cloud:spring-cloud-netflix:1.3.1.RELEASE'
+     }
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.cloud:spring-cloud-starter-eureka:1.2.0.RELEASE')
+   compile ('de.codecentric:spring-boot-admin-starter-client:1.5.1')
+   compile group: 'org.springframework.cloud', name: 'spring-cloud-config-server', version: '1.3.2.RELEASE'
+	compile ('org.springframework.boot:spring-boot-starter-actuator:1.5.4.RELEASE')
+	compile('io.springfox:springfox-swagger2:2.6.1')
+	compile('io.springfox:springfox-swagger-ui:2.6.1')
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-logging', version: '1.5.4.RELEASE'
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '3.4'
+}
+
